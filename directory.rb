@@ -9,6 +9,8 @@ puts "Terminator"
 puts "Freddy Krueger"
 puts "Joffrey Baratheon"
 puts "Norman Bates"
+# finally, we print the total number of students
 print "Overal, we have "
+#it's important that print() doesn't add new line characters
 print 11
 puts " great students"
