@@ -38,8 +38,8 @@ def input_students
       country: country.strip,
       height: height
     }
-
-    puts "Now we have #{students.count} students"
+    student_count = students.count
+    puts "Now we have #{students.count} student#{student_count == 1 ? '' : 's'}"
   end
 
   # return the array of students
