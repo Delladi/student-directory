@@ -1,47 +1,41 @@
 def input_students
   puts "Please enter the names of the students"
   puts "To finish, just hit return twice"
-
   # create an empty array
   students = []
+  # get the first name
+  name = gets.delete_suffix("\n")
+  # while the name is not empty, repeat this code
+  while !name.empty? do
+    # Prompt the user for additional student information
+    puts "Please enter the student's cohort:"
+    cohort = gets.delete_suffix("\n").to_sym
 
-  loop do
-    # get the name of the student
-    puts "Name:"
-    name = gets.chomp
-
-    # break the loop if the name is empty
-    break if name.empty?
-
-    # get the cohort of the student
-    puts "Cohort:"
-    cohort = gets.chomp.to_sym
-
-    # set a default cohort if none provided
-    cohort = :unknown if cohort.empty?
-
-    # prompt the user for additional student information
     puts "Please enter the student's hobbies:"
-    hobbies = gets.chomp
+    hobbies = gets.delete_suffix("\n")
 
     puts "Please enter the student's country of birth:"
-    country = gets.chomp
+    country = gets.delete_suffix("\n")
 
     puts "Please enter the student's height (in cm):"
-    height = gets.chomp.to_i
+    height = gets.delete_suffix("\n").to_i
 
-    # create a new student hash and add it to the array
+    # Create a new student hash and add it to the array
     students << {
-      name: name.strip,
+      name: name,
       cohort: cohort,
-      hobbies: hobbies.strip,
-      country: country.strip,
+      hobbies: hobbies,
+      country: country,
       height: height
     }
-    student_count = students.count
-    puts "Now we have #{students.count} student#{student_count == 1 ? '' : 's'}"
+    if students.count == 1
+      puts "Now we have 1 student"
+    else
+      puts "Now we have #{students.count} students"
+    end
+    # get another name from the user
+    name = gets.delete_suffix("\n")
   end
-
   # return the array of students
   students
 end
@@ -51,29 +45,27 @@ def print_header
   puts "-------------".center(50)
 end
 
-def print_students(students)
-  # get a list of all existing cohorts
+def print(students)
   cohorts = students.map { |student| student[:cohort] }.uniq
-
   cohorts.each do |cohort|
-    puts "#{cohort.to_s.capitalize} cohort:".center(50)
-
+    puts "#{cohort.capitalize} cohort".center(50)
     students.each_with_index do |student, index|
-      # print only the students from the current cohort
       if student[:cohort] == cohort
-        puts "#{index + 1}. #{student[:name]} (#{student[:height]}cm) - "\
-             "#{student[:hobbies]} - #{student[:country]}".center(50)
+        puts "#{index + 1}. #{student[:name]}, #{student[:hobbies]}, #{student[:country]}, #{student[:height]}cm".center(50)
       end
     end
   end
 end
 
 def print_footer(students)
-  puts "Overall, we have #{students.count} great students".center(50)
+  if students.count == 1
+    puts "Overall, we have 1 great student".center(50)
+  else
+    puts "Overall, we have #{students.count} great students".center(50)
+  end
 end
 
-# call the input_students, print_header, print_students, and print_footer methods
 students = input_students
 print_header
-print_students(students)
+print(students)
 print_footer(students)
