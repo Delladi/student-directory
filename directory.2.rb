@@ -1,4 +1,5 @@
-@students = [] # an empty array accessible to all methods
+#create an empty array
+@students = []
 #method for checking if spelling of the month was correct
 def spelling(month)
   #making an array for the months
@@ -19,14 +20,15 @@ def spelling(month)
   #checking if the array includes our user unput, if yes returns true
   month_array.include?(month)
 end
+#method for getting list of names from the user input into array
 def input_students
   puts "Please enter the names of the students"
   puts "To finish, just hit return twice"
-  # get the first name
+  #get the first name
   name = STDIN.gets.chomp
-  # while the name is not empty, repeat this code
+  #while the name is not empty, repeat this code
   while !name.empty? do
-  puts "Please enter country of birth"
+    puts "Please enter country of birth"
     birth = STDIN.gets.chomp
     puts "Please enter the hobby"
     hobby = STDIN.gets.chomp
@@ -57,25 +59,33 @@ end
 def add_students(name, cohort, birth, hobby)
   @students << {name: name, cohort: cohort, birth: birth, hobby: hobby}
 end 
-
-def interactive_menu
-  loop do
-    print_menu
-    process(STDIN.gets.chomp)
+#method for printing the header
+def print_header
+  puts "The students of Villains Academy"
+  puts "--------------------------------"
+end
+#method for printing each student name from the array
+def print_students_list
+  @students.each.with_index(1) do |name, index|
+    puts "#{index}.#{name[:name].center(16)}| cohort: #{name[:cohort].center(10)}| Country of birth: #{name[:birth].center(15)}| hobby: #{name[:hobby].center(15)}"
   end
 end
-
+#method for printing total number of students
+def print_footer
+  puts "Overall, we have #{@students.count} great students"
+end
+#method for printing the menu options
 def print_menu
   puts "1. Input the students"
   puts "2. Show the students"
   puts "3. Save the list to students.csv"
   puts "4. Load the list from students.csv"
-  puts "9. Exit" # 9 because we'll be adding more items
+  puts "9. Exit"
 end
 #method for printing student list
 def show_students
   print_header
-  print_student_list
+  print_students_list
   print_footer
 end
 #method for saving student data
@@ -88,14 +98,25 @@ def save_students
     csv_line = student_data.join(",")
     file.puts csv_line
   end
+  puts "File is saved successfully!"
   file.close
+end
+#method which asks user for input and if the input matches with our csv file it will be saved
+def saved_filename
+  savedfilename = STDIN.gets.chomp
+  if savedfilename == "students.csv"
+    #calling method for saving file
+    save_students
+  else 
+    puts "Incorrect file name, Please try again."
+  end
 end
 #method for loading files
 def load_students(filename = "students.csv")
   file = File.open("students.csv", "r")
   file.readlines.each do |line|
     name, cohort, birth, hobby = line.chomp.split(',')
-     add_students(name, cohort, birth, hobby)
+    add_students(name, cohort, birth, hobby)
   end
   file.close
 end
@@ -114,34 +135,31 @@ end
 #method for selection
 def process(selection)
   case selection
-  when "1"
-    input_students
-  when "2"
-    show_students
-  when "3"
-    save_students
-  when "4"
-    load_students
-  when "9"
-    exit # this will cause the program to terminate
-  else
-    puts "I don't know what you meant, try again"
+    when "1"
+      input_students
+    when "2"
+      puts "You have chosen to view the list of students."
+      show_students
+    when "3"
+      puts "Trying to save the file...."
+      puts "Please type students.csv in the terminal"
+      saved_filename
+    when "4"
+      puts "File is loaded successfully!"
+      load_students
+    when "9"
+      puts "Exiting the program...."
+      exit #this will cause the program to terminate
+    else
+      puts "I don't know what you meant, try again"
   end
 end
-
-def print_header
-  puts "The students of Villains Academy"
-  puts "-------------"
-end
-
-def print_student_list
-  @students.with_index(1) do |name, index|
-    puts "#{index}.#{name[:name].center(16)}| cohort: #{name[:cohort].center(10)}| Country of birth: #{name[:birth].center(15)}| hobby: #{name[:hobby].center(15)}"
-  end
-end
-
-def print_footer
-  puts "Overall, we have #{@students.count} great students"
+#final method for our interactive menu which will call other methods 
+def interactive_menu
+  loop do
+    print_menu
+    process(STDIN.gets.chomp)
+  end  
 end
 #nothing gonna happen until we call our method for the menu
 try_load_students
