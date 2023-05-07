@@ -1,3 +1,4 @@
+require 'csv'
 #create an empty array
 @students = []
 #method for checking if spelling of the month was correct
@@ -37,10 +38,10 @@ def input_students
     #sets default month as a november if the user made no input
     if birth.empty?
       birth = "Unknown"
-    end 
+    end
     if hobby.empty?
       hobby = "Unknown"
-    end 
+    end
     if cohort.empty?
       cohort = "November" 
     #if not empty its gonna ask user to correct their spelling until it equals any string from our spelling method
@@ -73,7 +74,6 @@ end
 #method for printing each student name from the array
 def print_students_list
   @students.each.with_index(1) do |name, index|
-    puts "#{index}.#{name[:name].center(16)}| cohort: #{name[:cohort].center(10)}| Country of birth: #{name[:birth].center(15)}| hobby: #{name[:hobby].center(15)}"
     puts "#{index}.#{name[:name].center(16)}| cohort: #{name[:cohort].center(10)}| Country of birth: #{name[:birth].center(10)}| hobby: #{name[:hobby].center(10)}"
   end
 end
@@ -85,8 +85,6 @@ end
 def print_menu
   puts "1. Input the students"
   puts "2. Show the students"
-  puts "3. Save the list to students.csv"
-  puts "4. Load the list from students.csv"
   puts "3. Save the list"
   puts "4. Load the list"
   puts "9. Exit"
@@ -101,14 +99,13 @@ end
 def save_students
   #open the file for writing
   file = File.open("students.csv", "w")
+  CSV.open("students.csv", "wb") do |csv|
   #iterate over the array of students
-  @students.each do |student|
-    student_data = [student[:name], student[:cohort], student[:birth], student[:hobby]]
-    csv_line = student_data.join(",")
-    file.puts csv_line
+    @students.each do |student|
+      csv << [student[:name], student[:cohort], student[:birth], student[:hobby]]
+    end
+    puts "File is saved successfully!"
   end
-  puts "File is saved successfully!"
-  file.close
 end
 #method which asks user for input and if the input matches with our csv file it will be saved
 def saved_filename
@@ -122,13 +119,15 @@ def saved_filename
 end
 #method for loading files
 def load_students(filename = "students.csv")
-  file = File.open("students.csv", "r")
-  file.readlines.each do |line|
-    name, cohort, birth, hobby = line.chomp.split(',')
-    add_students(name, cohort, birth, hobby)
-    puts "File is loaded successfully"
+  #assigned variable students again because program kept adding loaded array to the existing one, with this command we gonna get only the loaded array
+  @students = []
+  file = File.open(filename, "r") do |file|
+    file.readlines.each do |line|
+      name, cohort, birth, hobby = line.chomp.split(',')
+      add_students(name, cohort, birth, hobby)
+    end
   end
-  file.close
+    puts "File is loaded successfully"
 end
 #method which checks if the filename is correct before loading it
 def loaded_filename
@@ -136,7 +135,7 @@ def loaded_filename
   if loadedfilename == "students.csv"
     load_students
   else 
-    puts "Incorrcet filename. Please try again."
+    puts "Incoret filename. Please try again."
   end
 end
 #method for loading the program with argument
